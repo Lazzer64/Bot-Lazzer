@@ -33,17 +33,13 @@ var commands = [
     // Commands in this array will be checked whenever a message is sent
     // Messages matching multiple regular expressions will execute only the command found earliest in the array
 
-    new Command('^!help$', function(username, userID, channelID, message, rawEvent){
-        var text = 
-        "Help:\n" + 
-        "\t- !kappa: Puts a kappa face in the chat.\n" +
-        "\t- !rng [min] to [max]: Generates a random number between the min and max.\n";
-
-    sendMessage(text, userID);
-    }),
-
     new Command('((hi)|(hello)).*bot.*lazzer', function(username, userID, channelID, message, rawEvent){
         sendMessage("Hello "+username+"!", channelID);
+    }),
+
+    new Command('^!agee$', function(username, userID, channelID, message, rawEvent){
+        var voiceChannel = getVoiceChannel(username, userID, channelID, message, rawEvent)
+        playSound(voiceChannel, 'temp.m4a');
     }),
 
     new Command('agee+', function(username, userID, channelID, message, rawEvent){
@@ -75,10 +71,28 @@ var commands = [
         sendMessage(text, channelID);
     }),
 
-    new Command('^!voice$', function(username, userID, channelID, message, rawEvent){
-        bot.joinVoiceChannel(getVoiceChannel(username, userID, channelID, message, rawEvent));
+    new Command('^!help$', function(username, userID, channelID, message, rawEvent){
+        var text = 
+        "Help:\n" + 
+        "\t- !kappa: Puts a kappa face in the chat.\n" +
+        "\t- !rng [min] to [max]: Generates a random number between the min and max.\n";
+
+    sendMessage(text, userID);
     })
 ]
+
+function playSound(voiceChannelID, file) {
+    bot.joinVoiceChannel(voiceChannelID, function() {
+            console.log(voiceChannelID);
+            bot.getAudioContext(voiceChannelID, function(stream){
+                stream.stopAudioFile();
+                stream.playAudioFile(file);
+                stream.once('fileEnd', function() {
+                    bot.leaveVoiceChannel(voiceChannelID);
+                });
+            });   
+        });
+}
 
 var bot = new DiscordClient({
     autorun: true,
