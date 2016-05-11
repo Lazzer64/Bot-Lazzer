@@ -46,6 +46,11 @@ var commands = [
         stopAudio(voiceChannel);
     }),
 
+    new Command(['^!juicy$'], function(username, userID, channelID, message, rawEvent){
+        var voiceChannel = getVoiceChannel(username, userID, channelID, message, rawEvent)
+        playSound(voiceChannel, soundDir+'juicy.m4a');
+    }),
+
     new Command(['^!age+$'], function(username, userID, channelID, message, rawEvent){
         var voiceChannel = getVoiceChannel(username, userID, channelID, message, rawEvent)
         playSound(voiceChannel, soundDir+'agee.m4a');
