@@ -118,6 +118,7 @@ function stopAudio(voiceChannelID) {
 }
 
 function playSound(voiceChannelID, file) {
+    if(voiceChannelID == undefined) return;
     bot.joinVoiceChannel(voiceChannelID, function() {
         bot.getAudioContext(voiceChannelID, function(stream){
             stream.stopAudioFile();
@@ -144,6 +145,7 @@ bot.on('ready', function() {
 });
 
 function getVoiceChannel(username, userID, channelID, message, rawEvent) {
+    if(channelID in bot.directMessages) return undefined;
 
     var serverID = bot.serverFromChannel(channelID);
 
