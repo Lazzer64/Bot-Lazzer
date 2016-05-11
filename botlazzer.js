@@ -48,6 +48,11 @@ var commands = [
         playSound(voiceChannel, soundDir+'agee.m4a');
     }),
 
+    new Command('^!neverlucky$', function(username, userID, channelID, message, rawEvent){
+        var voiceChannel = getVoiceChannel(username, userID, channelID, message, rawEvent)
+        playSound(voiceChannel, soundDir+'neverlucky.m4a');
+    }),
+
     new Command('agee+', function(username, userID, channelID, message, rawEvent){
         sendMessage("ageee", channelID);
     }),
@@ -80,9 +85,10 @@ var commands = [
     new Command('^!help$', function(username, userID, channelID, message, rawEvent){
         var text = 
         "Help:\n" + 
+        "\t- !agee: Brings bot lazzer into your channel for a cheerful \"agee\"\n" + 
         "\t- !kappa: Puts a kappa face in the chat.\n" +
+        "\t- !neverlucky: Expresses your frustration with RNGesus.\n" +
         "\t- !rng [min] to [max]: Generates a random number between the min and max.\n" +
-        "\t- !agee: brings bot lazzer into your channel for a cheerful \"agee\"\n" + 
         "";
 
     sendMessage(text, userID);
