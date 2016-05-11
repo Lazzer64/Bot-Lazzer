@@ -30,6 +30,9 @@ function sendMessage(text, ID){
 
 var commands = [
 
+    // Commands in this array will be checked whenever a message is sent
+    // Messages matching multiple regular expressions will execute only the command found earliest in the array
+
     new Command('^!help$', function(username, userID, channelID, message, rawEvent){
         var text = 
         "Help:\n" + 
@@ -68,7 +71,8 @@ var commands = [
         var roll = Math.random() * (max - min);
         var result = Math.round(roll) + + min;
 
-        sendMessage('min: '+min+'\nmax: '+max+'\nRoll: '+result, channelID);
+        var text = 'Random number from '+min+' to '+max+': \n--> '+result+' <--';
+        sendMessage(text, channelID);
     })
 ]
 
@@ -89,7 +93,10 @@ bot.on('ready', function() {
 bot.on('message', function(username, userID, channelID, message, rawEvent) {
     if(userID == bot.id) return;
     for (var cmd in commands) {
-        if(commands[cmd].matches(message)) commands[cmd].action(username, userID, channelID, message, rawEvent);
+        if(commands[cmd].matches(message)) {
+            commands[cmd].action(username, userID, channelID, message, rawEvent);
+            return;
+        }
     }
     
 });
