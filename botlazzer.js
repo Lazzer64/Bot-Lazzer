@@ -10,9 +10,12 @@ console.log("Use the following url to add Bot-Lazzer to your server:");
 console.log("https://discordapp.com/oauth2/authorize?client_id="+clientID+"&scope=bot&permissions="+permissions);
 
 function Command(message, action) {
-        this.regexp = new RegExp(message,'i');
+        this.regexp = message;
         this.matches = function(text) { 
-            return (text.match(this.regexp)); 
+            for (var msg in this.regexp) {
+                if(text.match(new RegExp(this.regexp[msg]))) return true;
+            }
+            return false;
         };
 
         if(action == undefined){
@@ -34,30 +37,30 @@ var commands = [
     // Commands in this array will be checked whenever a message is sent
     // Messages matching multiple regular expressions will execute only the command found earliest in the array
 
-    new Command('((hi)|(hello)).*bot.*lazzer', function(username, userID, channelID, message, rawEvent){
+    new Command(['((hi)|(hello)).*bot.*lazzer'], function(username, userID, channelID, message, rawEvent){
         sendMessage("Hello "+username+"!", channelID);
     }),
 
-    new Command('^!shh+$', function(username, userID, channelID, message, rawEvent){
+    new Command(['^!shh+$'], function(username, userID, channelID, message, rawEvent){
         var voiceChannel = getVoiceChannel(username, userID, channelID, message, rawEvent)
         stopAudio(voiceChannel);
     }),
 
-    new Command('^!age+$', function(username, userID, channelID, message, rawEvent){
+    new Command(['^!age+$'], function(username, userID, channelID, message, rawEvent){
         var voiceChannel = getVoiceChannel(username, userID, channelID, message, rawEvent)
         playSound(voiceChannel, soundDir+'agee.m4a');
     }),
 
-    new Command('^!neverlucky$', function(username, userID, channelID, message, rawEvent){
+    new Command(['^!neverlucky$','^!nl$'], function(username, userID, channelID, message, rawEvent){
         var voiceChannel = getVoiceChannel(username, userID, channelID, message, rawEvent)
         playSound(voiceChannel, soundDir+'neverlucky.m4a');
     }),
 
-    new Command('agee+', function(username, userID, channelID, message, rawEvent){
+    new Command(['agee+'], function(username, userID, channelID, message, rawEvent){
         sendMessage("ageee", channelID);
     }),
 
-    new Command('^!kappa$', function(username, userID, channelID, message, rawEvent){
+    new Command(['^!kappa$'], function(username, userID, channelID, message, rawEvent){
         bot.uploadFile({
             to: channelID,
             file: "img/kappaFace.png",
@@ -66,7 +69,7 @@ var commands = [
         });
     }),
 
-    new Command('^!rng\\s*\\d+\\s*(-|(to))\\s*\\d+$', function(username, userID, channelID, message, rawEvent){
+    new Command(['^!rng\\s*\\d+\\s*(-|(to))\\s*\\d+$'], function(username, userID, channelID, message, rawEvent){
         var fixed = message.replace(/ /g, '');
         fixed = fixed.replace('to', '-');
         fixed = fixed.substring(4);
@@ -82,7 +85,7 @@ var commands = [
         sendMessage(text, channelID);
     }),
 
-    new Command('^!help$', function(username, userID, channelID, message, rawEvent){
+    new Command(['^!help$'], function(username, userID, channelID, message, rawEvent){
         var text = 
         "Help:\n" + 
         "\t- !agee: Brings bot lazzer into your channel for a cheerful \"agee\"\n" + 
