@@ -73,6 +73,10 @@ var commands = [
 
         var text = 'Random number from '+min+' to '+max+': \n--> '+result+' <--';
         sendMessage(text, channelID);
+    }),
+
+    new Command('^!voice$', function(username, userID, channelID, message, rawEvent){
+        bot.joinVoiceChannel(getVoiceChannel(username, userID, channelID, message, rawEvent));
     })
 ]
 
@@ -89,6 +93,24 @@ bot.on('ready', function() {
         game: "Lazzer Simulator 2016"
     });
 });
+
+function getVoiceChannel(username, userID, channelID, message, rawEvent) {
+
+    var serverID = bot.serverFromChannel(channelID);
+
+    var server = bot.servers[serverID].channels;
+    for(var channel in server) {
+
+        if(server[channel].type == 'voice') {
+
+            var members = server[channel].members;
+            for (var member in members) {
+
+                if(members[member].user_id == userID) return channel;
+            }
+        }
+    }
+}
 
 bot.on('message', function(username, userID, channelID, message, rawEvent) {
     if(userID == bot.id) return;
