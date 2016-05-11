@@ -3,6 +3,7 @@ var config = require('./config.js');
 var TOKEN = config.token;
 var clientID = config.clientID;
 var permissions = "3148800"; 
+var soundDir = "sounds/";
 
 console.log("Bot Lazzer, Bot Lazzer...");
 console.log("Use the following url to add Bot-Lazzer to your server:");
@@ -37,9 +38,14 @@ var commands = [
         sendMessage("Hello "+username+"!", channelID);
     }),
 
-    new Command('^!agee$', function(username, userID, channelID, message, rawEvent){
+    new Command('^!shh+$', function(username, userID, channelID, message, rawEvent){
         var voiceChannel = getVoiceChannel(username, userID, channelID, message, rawEvent)
-        playSound(voiceChannel, 'temp.m4a');
+        stopAudio(voiceChannel);
+    }),
+
+    new Command('^!age+$', function(username, userID, channelID, message, rawEvent){
+        var voiceChannel = getVoiceChannel(username, userID, channelID, message, rawEvent)
+        playSound(voiceChannel, soundDir+'agee.m4a');
     }),
 
     new Command('agee+', function(username, userID, channelID, message, rawEvent){
@@ -75,23 +81,31 @@ var commands = [
         var text = 
         "Help:\n" + 
         "\t- !kappa: Puts a kappa face in the chat.\n" +
-        "\t- !rng [min] to [max]: Generates a random number between the min and max.\n";
+        "\t- !rng [min] to [max]: Generates a random number between the min and max.\n" +
+        "\t- !agee: brings bot lazzer into your channel for a cheerful \"agee\"\n" + 
+        "";
 
     sendMessage(text, userID);
     })
 ]
 
+function stopAudio(voiceChannelID) {
+    bot.getAudioContext(voiceChannelID, function(stream){
+        stream.stopAudioFile();
+        bot.leaveVoiceChannel(voiceChannelID);
+    });   
+}
+
 function playSound(voiceChannelID, file) {
     bot.joinVoiceChannel(voiceChannelID, function() {
-            console.log(voiceChannelID);
-            bot.getAudioContext(voiceChannelID, function(stream){
-                stream.stopAudioFile();
-                stream.playAudioFile(file);
-                stream.once('fileEnd', function() {
-                    bot.leaveVoiceChannel(voiceChannelID);
-                });
-            });   
-        });
+        bot.getAudioContext(voiceChannelID, function(stream){
+            stream.stopAudioFile();
+            stream.playAudioFile(file);
+            stream.once('fileEnd', function() {
+                bot.leaveVoiceChannel(voiceChannelID);
+            });
+        });   
+    });
 }
 
 var bot = new DiscordClient({
