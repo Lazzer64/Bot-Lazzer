@@ -1,5 +1,6 @@
 var DiscordClient = require('discord.io');
 var config = require('./config.js');
+var cookie = require('./fortunecookie.js');
 var TOKEN = config.token;
 var clientID = config.clientID;
 var permissions = "3148800"; 
@@ -10,19 +11,19 @@ console.log("Use the following url to add Bot-Lazzer to your server:");
 console.log("https://discordapp.com/oauth2/authorize?client_id="+clientID+"&scope=bot&permissions="+permissions);
 
 function Command(message, action) {
-        this.regexp = message;
-        this.matches = function(text) { 
-            for (var msg in this.regexp) {
-                if(text.match(new RegExp(this.regexp[msg]))) return true;
-            }
-            return false;
-        };
-
-        if(action == undefined){
-            this.action = function(username, userID, channelID, message, rawEvent){ console.log(message); };
-        } else { 
-            this.action = action; 
+    this.regexp = message;
+    this.matches = function(text) { 
+        for (var msg in this.regexp) {
+            if(text.match(new RegExp(this.regexp[msg]))) return true;
         }
+        return false;
+    };
+
+    if(action == undefined){
+        this.action = function(username, userID, channelID, message, rawEvent){ console.log(message); };
+    } else { 
+        this.action = action; 
+    }
 } 
 
 function sendMessage(text, ID){
@@ -34,8 +35,8 @@ function sendMessage(text, ID){
 
 var commands = [
 
-    // Commands in this array will be checked whenever a message is sent
-    // Messages matching multiple regular expressions will execute only the command found earliest in the array
+// Commands in this array will be checked whenever a message is sent
+// Messages matching multiple regular expressions will execute only the command found earliest in the array
 
     new Command(['((hi)|(hello)).*bot.*lazzer'], function(username, userID, channelID, message, rawEvent){
         sendMessage("Hello "+username+"!", channelID);
@@ -74,6 +75,11 @@ var commands = [
         });
     }),
 
+    new Command(['!fortune$'], function(username, userID, channelID, message, rawEvent){
+        var text = cookie.fortunes[Math.floor(Math.random()*cookie.fortunes.length)];
+        sendMessage(text, channelID);
+    }),
+
     new Command(['^!rng\\s*\\d+\\s*(-|(to))\\s*\\d+$'], function(username, userID, channelID, message, rawEvent){
         var fixed = message.replace(/ /g, '');
         fixed = fixed.replace('to', '-');
@@ -94,6 +100,7 @@ var commands = [
         var text = 
         "Help:\n" + 
         "\t- !agee: Brings bot lazzer into your channel for a cheerful \"agee\"\n" + 
+        "\t- !fortune: Gives you a fortune cookie style fortune\n" +
         "\t- !kappa: Puts a kappa face in the chat.\n" +
         "\t- !neverlucky: Expresses your frustration with RNGesus.\n" +
         "\t- !rng [min] to [max]: Generates a random number between the min and max.\n" +
@@ -162,5 +169,5 @@ bot.on('message', function(username, userID, channelID, message, rawEvent) {
             return;
         }
     }
-    
+
 });
