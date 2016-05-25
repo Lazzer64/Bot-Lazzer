@@ -1,9 +1,9 @@
 {
   "name": "botlazzer",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "main": "botlazzer.js",
   "dependencies": {
-    "discord.io": "^1.9.0"
+    "discord.js": "^7.0.1"
   },
   "devDependencies": {},
   "scripts": {

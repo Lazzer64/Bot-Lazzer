@@ -1,4 +1,4 @@
-var DiscordClient = require('discord.io');
+var Discord = require('discord.js');
 var config = require('./config.js');
 var cookie = require('./fortunecookie.js');
 var TOKEN = config.token;
@@ -7,81 +7,110 @@ var permissions = "3148800";
 var soundDir = "sounds/";
 
 console.log("Bot Lazzer, Bot Lazzer...");
-console.log("Use the following url to add Bot-Lazzer to your server:");
-console.log("https://discordapp.com/oauth2/authorize?client_id="+clientID+"&scope=bot&permissions="+permissions);
+
+var bot = new Discord.Client(); 
+bot.loginWithToken(TOKEN);
+
+bot.on('ready', function() {
+
+    console.log("Use the following url to add Bot-Lazzer to your server:");
+    console.log("https://discordapp.com/oauth2/authorize?client_id="+clientID+"&scope=bot&permissions="+permissions);
+
+    bot.setPlayingGame("Lazzer Simulator 2016");
+});
+
+bot.on('message', function(message) {
+    if(message.author == bot.user) return;
+    for (var cmd in commands) {
+        if(commands[cmd].matches(message)) {
+            commands[cmd].action(message);
+            return;
+        }
+    }
+
+});
+
+function sendMessage(text, channel){
+    bot.sendMessage(channel, "```"+text+"```");
+}
+
+function playSound(channel, file, seek, volume) {
+    if(channel == undefined) return;
+
+    var options = {
+        seek: seek, // in seconds
+        volume: volume // 0.5 = half volume 2.0 = double volume
+    }
+
+
+    bot.joinVoiceChannel(channel, function() {
+        bot.joinVoiceChannel(channel, function(error, connection){
+
+            if(connection.playing) return;
+
+            connection.playFile(soundDir+file, options, function(error, intent){ 
+                intent.on("end", function(){
+                    connection.destroy();
+                }); 
+            });
+
+        });
+    });
+}
 
 function Command(message, action) {
     this.regexp = message;
     this.matches = function(text) { 
         for (var msg in this.regexp) {
-            if(text.match(new RegExp(this.regexp[msg]))) return true;
+            if(text.content.match(new RegExp(this.regexp[msg]))) return true;
         }
         return false;
     };
 
     if(action == undefined){
-        this.action = function(username, userID, channelID, message, rawEvent){ console.log(message); };
+        this.action = function(text){ console.log(text); };
     } else { 
         this.action = action; 
     }
 } 
 
-function sendMessage(text, ID){
-    bot.sendMessage({
-        to: ID,
-        message: '```'+text+'```'
-    });
-}
 
 var commands = [
 
 // Commands in this array will be checked whenever a message is sent
 // Messages matching multiple regular expressions will execute only the command found earliest in the array
 
-    new Command(['((hi)|(hello)).*bot.*lazzer'], function(username, userID, channelID, message, rawEvent){
-        sendMessage("Hello "+username+"!", channelID);
+    new Command(['((hi)|(hello)).*bot.*lazzer'], function(message){
+        sendMessage("Hello "+message.author.username+"!", message.channel);
     }),
 
-    new Command(['^!shh+$'], function(username, userID, channelID, message, rawEvent){
-        var voiceChannel = getVoiceChannel(username, userID, channelID, message, rawEvent)
-        stopAudio(voiceChannel);
+    new Command(['^!juicy$'], function(message){
+        playSound(message.author.voiceChannel, 'juicy.m4a');
     }),
 
-    new Command(['^!juicy$'], function(username, userID, channelID, message, rawEvent){
-        var voiceChannel = getVoiceChannel(username, userID, channelID, message, rawEvent)
-        playSound(voiceChannel, soundDir+'juicy.m4a');
+    new Command(['^!age+$'], function(message){
+        playSound(message.author.voiceChannel, 'agee.m4a');
     }),
 
-    new Command(['^!age+$'], function(username, userID, channelID, message, rawEvent){
-        var voiceChannel = getVoiceChannel(username, userID, channelID, message, rawEvent)
-        playSound(voiceChannel, soundDir+'agee.m4a');
+    new Command(['^!neverlucky$','^!nl$'], function(message){
+        playSound(message.author.voiceChannel, 'neverlucky.m4a');
     }),
 
-    new Command(['^!neverlucky$','^!nl$'], function(username, userID, channelID, message, rawEvent){
-        var voiceChannel = getVoiceChannel(username, userID, channelID, message, rawEvent)
-        playSound(voiceChannel, soundDir+'neverlucky.m4a');
+    new Command(['agee+'], function(message){
+        sendMessage("ageee", message.channel);
     }),
 
-    new Command(['agee+'], function(username, userID, channelID, message, rawEvent){
-        sendMessage("ageee", channelID);
+    new Command(['^!kappa$'], function(message){
+        bot.sendFile(message.channel, "img/kappaFace.png");
     }),
 
-    new Command(['^!kappa$'], function(username, userID, channelID, message, rawEvent){
-        bot.uploadFile({
-            to: channelID,
-            file: "img/kappaFace.png",
-            filename: "kappa.png",
-            message: ""
-        });
-    }),
-
-    new Command(['!fortune$'], function(username, userID, channelID, message, rawEvent){
+    new Command(['!fortune$'], function(message){
         var text = cookie.fortunes[Math.floor(Math.random()*cookie.fortunes.length)];
-        sendMessage(text, channelID);
+        sendMessage(text, message.channel);
     }),
 
-    new Command(['^!rng\\s*\\d+\\s*(-|(to))\\s*\\d+$'], function(username, userID, channelID, message, rawEvent){
-        var fixed = message.replace(/ /g, '');
+    new Command(['^!rng\\s*\\d+\\s*(-|(to))\\s*\\d+$'], function(message){
+        var fixed = message.content.replace(/ /g, '');
         fixed = fixed.replace('to', '-');
         fixed = fixed.substring(4);
 
@@ -93,10 +122,10 @@ var commands = [
         var result = Math.round(roll) + + min;
 
         var text = 'Random number from '+min+' to '+max+': \n--> '+result+' <--';
-        sendMessage(text, channelID);
+        sendMessage(text, message.channel);
     }),
 
-    new Command(['^!help$'], function(username, userID, channelID, message, rawEvent){
+    new Command(['^!help$'], function(message){
         var text = 
         "Help:\n" + 
         "\t- !agee: Brings bot lazzer into your channel for a cheerful \"agee\"\n" + 
@@ -106,70 +135,7 @@ var commands = [
         "\t- !rng [min] to [max]: Generates a random number between the min and max.\n" +
         "";
 
-    sendMessage(text, userID);
+        sendMessage(text, message.author);
     })
 ]
 
-function stopAudio(voiceChannelID) {
-    bot.getAudioContext(voiceChannelID, function(stream){
-        stream.stopAudioFile();
-        bot.leaveVoiceChannel(voiceChannelID);
-    });   
-}
-
-function playSound(voiceChannelID, file) {
-    if(voiceChannelID == undefined) return;
-    bot.joinVoiceChannel(voiceChannelID, function() {
-        bot.getAudioContext(voiceChannelID, function(stream){
-            stream.stopAudioFile();
-            stream.playAudioFile(file);
-            stream.once('fileEnd', function() {
-                bot.leaveVoiceChannel(voiceChannelID);
-            });
-        });   
-    });
-}
-
-var bot = new DiscordClient({
-    autorun: true,
-    token: TOKEN,
-});
-
-bot.on('ready', function() {
-    bot.connect();
-    bot.setPresence({
-        type: 0, // 0 = game, 1 = stream
-        url: "",
-        game: "Lazzer Simulator 2016"
-    });
-});
-
-function getVoiceChannel(username, userID, channelID, message, rawEvent) {
-    if(channelID in bot.directMessages) return undefined;
-
-    var serverID = bot.serverFromChannel(channelID);
-
-    var server = bot.servers[serverID].channels;
-    for(var channel in server) {
-
-        if(server[channel].type == 'voice') {
-
-            var members = server[channel].members;
-            for (var member in members) {
-
-                if(members[member].user_id == userID) return channel;
-            }
-        }
-    }
-}
-
-bot.on('message', function(username, userID, channelID, message, rawEvent) {
-    if(userID == bot.id) return;
-    for (var cmd in commands) {
-        if(commands[cmd].matches(message)) {
-            commands[cmd].action(username, userID, channelID, message, rawEvent);
-            return;
-        }
-    }
-
-});
