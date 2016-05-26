@@ -1,6 +1,7 @@
 var Discord = require('discord.js');
 var config = require('./config.js');
 var cookie = require('./fortunecookie.js');
+var eightball = require('./eightball.js');
 var TOKEN = config.token;
 var clientID = config.clientID;
 var permissions = "3148800"; 
@@ -80,10 +81,6 @@ var commands = [
 // Commands in this array will be checked whenever a message is sent
 // Messages matching multiple regular expressions will execute only the command found earliest in the array
 
-    new Command(['((hi)|(hello)).*bot.*lazzer'], function(message){
-        sendMessage("Hello "+message.author.username+"!", message.channel);
-    }),
-
     new Command(['^!juicy$'], function(message){
         playSound(message.author.voiceChannel, 'juicy.m4a');
     }),
@@ -96,16 +93,17 @@ var commands = [
         playSound(message.author.voiceChannel, 'neverlucky.m4a');
     }),
 
-    new Command(['agee+'], function(message){
-        sendMessage("ageee", message.channel);
-    }),
-
     new Command(['^!kappa$'], function(message){
         bot.sendFile(message.channel, "img/kappaFace.png");
     }),
 
-    new Command(['!fortune$'], function(message){
+    new Command(['^!fortune$'], function(message){
         var text = cookie.fortunes[Math.floor(Math.random()*cookie.fortunes.length)];
+        sendMessage(text, message.channel);
+    }),
+
+    new Command(['^!((8)|(eight))ball$', '^bot.*lazzer.*?$'], function(message){
+        var text = eightball.responses[Math.floor(Math.random()*eightball.responses.length)];
         sendMessage(text, message.channel);
     }),
 
@@ -129,6 +127,7 @@ var commands = [
         var text = 
         "Help:\n" + 
         "\t- !agee: Brings bot lazzer into your channel for a cheerful \"agee\"\n" + 
+        "\t- !eightball: Answeres a yes or no questions you give bot lazzer\n" +
         "\t- !fortune: Gives you a fortune cookie style fortune\n" +
         "\t- !kappa: Puts a kappa face in the chat.\n" +
         "\t- !neverlucky: Expresses your frustration with RNGesus.\n" +
@@ -137,5 +136,14 @@ var commands = [
 
         sendMessage(text, message.author);
     })
+
+    new Command(['((hi)|(hello)).*bot.*lazzer'], function(message){
+        sendMessage("Hello "+message.author.username+"!", message.channel);
+    }),
+
+    new Command(['agee+'], function(message){
+        sendMessage("ageee", message.channel);
+    }),
+
 ]
 
