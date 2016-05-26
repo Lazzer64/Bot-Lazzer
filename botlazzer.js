@@ -102,7 +102,25 @@ var commands = [
         sendMessage(text, message.channel);
     }),
 
-    new Command(['^!((8)|(eight))ball$', '^bot.*lazzer.*?$'], function(message){
+    new Command(['^!((8)|(eight))ball$', '^bot.*lazzer.*\\?$'], function(message){
+
+        var aborts = [
+            "or",
+            "who",
+            "where",
+            "when",
+            "why",
+            "how",
+            "what",
+        ]
+
+        for (var x in aborts) {
+            if(message.content.match(new RegExp(aborts[x]))){
+                sendMessage("I can only answer yes or no questions", message.channel);
+                return;
+            }
+        }
+        
         var text = eightball.responses[Math.floor(Math.random()*eightball.responses.length)];
         sendMessage(text, message.channel);
     }),
