@@ -135,7 +135,7 @@ var commands = [
         "";
 
         sendMessage(text, message.author);
-    })
+    }),
 
     new Command(['((hi)|(hello)).*bot.*lazzer'], function(message){
         sendMessage("Hello "+message.author.username+"!", message.channel);
@@ -143,7 +143,7 @@ var commands = [
 
     new Command(['agee+'], function(message){
         sendMessage("ageee", message.channel);
-    }),
+    })
 
 ]
 
