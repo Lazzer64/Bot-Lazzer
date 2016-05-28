@@ -33,8 +33,13 @@ bot.on('message', function(message) {
 });
 
 function playYoutube(message){
-    
-    var vidID = message.content.substring(6);
+   
+    var vidID = ''; 
+    // Deletes the initial '!play ', if the command name is changed this must be aswell
+    var temp = message.content.substring(6); 
+    // Check to see if full link
+    if(temp.match("youtube")) temp = temp.substring(temp.search('=')+1); 
+    vidID = temp;
 
     var options = {
         host: 'keepvid.com',
