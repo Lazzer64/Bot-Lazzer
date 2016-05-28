@@ -60,7 +60,7 @@ function playYoutube(message){
             var end = x.search("class=\"l\"");
             x = x.substring(0,end-1);
 
-            playSound(message.author.voiceChannel, x, 0, 0.5);
+            playSound(message, x, 0, 0.5);
         });
 
     }).end();
@@ -70,8 +70,8 @@ function sendMessage(text, channel){
     bot.sendMessage(channel, "```"+text+"```");
 }
 
-function playSound(channel, file, seek, volume) {
-    if(channel == undefined) return;
+function playSound(message, file, seek, volume) {
+    if(message.author.voiceChannel == undefined) return;
 
     var options = {
         seek: seek, // in seconds
@@ -79,9 +79,12 @@ function playSound(channel, file, seek, volume) {
     }
 
 
-    bot.joinVoiceChannel(channel, function(error, connection){
+    bot.joinVoiceChannel(message.author.voiceChannel, function(error, connection){
 
-        if(connection.playing) return;
+        if(connection.playing) {
+            sendMessage("I can only play one sound at a time", message.channel);    
+            return;
+        }
 
         connection.playFile(file, options, function(error, intent){ 
             intent.on("end", function(){
@@ -134,15 +137,15 @@ var commands = [
     }),
 
     new Command(['^!juicy$'], function(message){
-        playSound(message.author.voiceChannel, soundDir+'juicy.m4a');
+        playSound(message, soundDir+'juicy.m4a');
     }),
 
     new Command(['^!age+$'], function(message){
-        playSound(message.author.voiceChannel, soundDir+'agee.m4a');
+        playSound(message, soundDir+'agee.m4a');
     }),
 
     new Command(['^!neverlucky$','^!nl$'], function(message){
-        playSound(message.author.voiceChannel, soundDir+'neverlucky.m4a');
+        playSound(message, soundDir+'neverlucky.m4a');
     }),
 
     new Command(['^!kappa$'], function(message){
