@@ -35,10 +35,15 @@ bot.on('message', function(message) {
 function playYoutube(message){
    
     var vidID = ''; 
-    // Deletes the initial '!play ', if the command name is changed this must be aswell
-    var temp = message.content.substring(6); 
+    var seek = 0;
+    // Deletes the initial ! command
+    var temp = message.content.substring(message.content.search(" ")+1); 
     // Check to see if full link
     if(temp.match("youtube")) temp = temp.substring(temp.search('=')+1); 
+    if(temp.search(":") != -1) {
+        seek = temp.substring(temp.search(":")+1);
+        temp = temp.substring(0,temp.search(":"));
+    }
     vidID = temp;
 
     var options = {
@@ -60,7 +65,7 @@ function playYoutube(message){
             var end = x.search("class=\"l\"");
             x = x.substring(0,end-1);
 
-            playSound(message, x, 0, 0.5);
+            playSound(message, x, seek, 0.5);
         });
 
     }).end();
@@ -202,11 +207,11 @@ var commands = [
         "\t- !agee: Brings bot lazzer into your channel for a cheerful \"agee\"\n" + 
         "\t- !eightball: Answeres a yes or no questions you give bot lazzer\n" +
         "\t- !fortune: Gives you a fortune cookie style fortune\n" +
-        "\t- !kappa: Puts a kappa face in the chat.\n" +
-        "\t- !neverlucky: Expresses your frustration with RNGesus.\n" +
-        "\t- !play [youtube link]: Plays the audio for the given youtube video\n" +
-        "\t- !rng [min] to [max]: Generates a random number between the min and max.\n" +
-        "\t- !shh stop the audio bot lazzer is playing\n" +
+        "\t- !kappa: Puts a kappa face in the chat\n" +
+        "\t- !neverlucky: Expresses your frustration with RNGesus\n" +
+        "\t- !play [youtube link]:[start second]: Plays the audio for the given youtube video\n" +
+        "\t- !rng [min] to [max]: Generates a random number between the min and max\n" +
+        "\t- !shh: Stop the audio bot lazzer is playing\n" +
         "";
 
         sendMessage(text, message.author);
