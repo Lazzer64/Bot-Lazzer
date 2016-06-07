@@ -23,14 +23,20 @@ bot.on('ready', function() {
 
 bot.on('message', function(message) {
     if(message.author == bot.user) return;
+    var cmd = getCommand(message);
+    if(cmd != undefined){
+        console.log(message.author.username + "(" + message.author.id + "): \"" + message.content + "\"");
+        cmd.action(message);
+    }
+});
+
+function getCommand(message) {
     for (var cmd in commands) {
         if(commands[cmd].matches(message)) {
-            commands[cmd].action(message);
-            return;
+            return commands[cmd];
         }
     }
-
-});
+}
 
 function playYoutube(message){
    
