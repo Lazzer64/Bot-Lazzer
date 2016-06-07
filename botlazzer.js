@@ -1,3 +1,4 @@
+var http = require('http');
 var Discord = require('discord.js');
 var config = require('./config.js');
 var cookie = require('./fortunecookie.js');
@@ -31,12 +32,51 @@ bot.on('message', function(message) {
 
 });
 
+function playYoutube(message){
+   
+    var vidID = ''; 
+    var seek = 0;
+    // Deletes the initial ! command
+    var temp = message.content.substring(message.content.search(" ")+1); 
+    // Check to see if full link
+    if(temp.match("youtube")) temp = temp.substring(temp.search('=')+1); 
+    if(temp.search(":") != -1) {
+        seek = temp.substring(temp.search(":")+1);
+        temp = temp.substring(0,temp.search(":"));
+    }
+    vidID = temp;
+
+    var options = {
+        host: 'keepvid.com',
+        path: '/?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3D'+vidID
+    }
+
+    http.request(options, function(resp){
+        var str = "";
+        resp.on('data', function(chunk){ str+=chunk; });
+        resp.on('end', function(chunk){ 
+
+            // Parses through keepvid http response to find m4a link
+            var start = str.search("Audio Only\\).m4a");
+
+            var x = str.substring(start);
+            var x = x.substring(x.search("http"));
+
+            var end = x.search("class=\"l\"");
+            x = x.substring(0,end-1);
+
+            playSound(message, x, seek, 0.5);
+        });
+
+    }).end();
+}
+
 function sendMessage(text, channel){
     bot.sendMessage(channel, "```"+text+"```");
 }
 
-function playSound(channel, file, seek, volume) {
-    if(channel == undefined) return;
+function playSound(message, file, seek, volume) {
+    if(message.author.voiceChannel == undefined) return;
 
     var options = {
         seek: seek, // in seconds
@@ -44,19 +84,31 @@ function playSound(channel, file, seek, volume) {
     }
 
 
-    bot.joinVoiceChannel(channel, function() {
-        bot.joinVoiceChannel(channel, function(error, connection){
+    bot.joinVoiceChannel(message.author.voiceChannel, function(error, connection){
 
-            if(connection.playing) return;
+        if(connection.playing) {
+            sendMessage("I can only play one sound at a time", message.channel);    
+            return;
+        }
 
-            connection.playFile(soundDir+file, options, function(error, intent){ 
-                intent.on("end", function(){
-                    connection.destroy();
-                }); 
-            });
-
+        connection.playFile(file, options, function(error, intent){ 
+            intent.on("end", function(){
+                connection.destroy();
+            }); 
         });
+
     });
+}
+
+function stopSound(channel) {
+    if(channel == undefined) return;
+    for (var x in bot.voiceConnections) {
+        if(bot.voiceConnections[x] == undefined) return;
+
+        if(channel.id == bot.voiceConnections[x]['id']){
+            bot.voiceConnections[x].stopPlaying();
+        }
+    }
 }
 
 function Command(message, action) {
@@ -75,22 +127,30 @@ function Command(message, action) {
     }
 } 
 
-
 var commands = [
 
 // Commands in this array will be checked whenever a message is sent
 // Messages matching multiple regular expressions will execute only the command found earliest in the array
 
+
+    new Command(['^!play \\S*$'], function(message){
+        playYoutube(message);
+    }),
+
+    new Command(['^!shh+$'], function(message){
+        stopSound(message.author.voiceChannel);
+    }),
+
     new Command(['^!juicy$'], function(message){
-        playSound(message.author.voiceChannel, 'juicy.m4a');
+        playSound(message, soundDir+'juicy.m4a');
     }),
 
     new Command(['^!age+$'], function(message){
-        playSound(message.author.voiceChannel, 'agee.m4a');
+        playSound(message, soundDir+'agee.m4a');
     }),
 
     new Command(['^!neverlucky$','^!nl$'], function(message){
-        playSound(message.author.voiceChannel, 'neverlucky.m4a');
+        playSound(message, soundDir+'neverlucky.m4a');
     }),
 
     new Command(['^!kappa$'], function(message){
@@ -147,9 +207,11 @@ var commands = [
         "\t- !agee: Brings bot lazzer into your channel for a cheerful \"agee\"\n" + 
         "\t- !eightball: Answeres a yes or no questions you give bot lazzer\n" +
         "\t- !fortune: Gives you a fortune cookie style fortune\n" +
-        "\t- !kappa: Puts a kappa face in the chat.\n" +
-        "\t- !neverlucky: Expresses your frustration with RNGesus.\n" +
-        "\t- !rng [min] to [max]: Generates a random number between the min and max.\n" +
+        "\t- !kappa: Puts a kappa face in the chat\n" +
+        "\t- !neverlucky: Expresses your frustration with RNGesus\n" +
+        "\t- !play [youtube link]:[start second]: Plays the audio for the given youtube video\n" +
+        "\t- !rng [min] to [max]: Generates a random number between the min and max\n" +
+        "\t- !shh: Stop the audio bot lazzer is playing\n" +
         "";
 
         sendMessage(text, message.author);
