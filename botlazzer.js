@@ -117,11 +117,11 @@ function stopSound(channel) {
     }
 }
 
-function Command(message, action) {
-    this.regexp = message;
+function Command(regexp, action) {
+    this.regexp = regexp;
     this.matches = function(text) { 
-        for (var msg in this.regexp) {
-            if(text.content.match(new RegExp(this.regexp[msg]))) return true;
+        for (var x in this.regexp) {
+            if(text.content.match(this.regexp[x])) return true;
         }
         return false;
     };
@@ -139,36 +139,36 @@ var commands = [
 // Messages matching multiple regular expressions will execute only the command found earliest in the array
 
 
-    new Command(['^!play \\S*$'], function(message){
+    new Command([/^!play \\S*$/i], function(message){
         playYoutube(message);
     }),
 
-    new Command(['^!shh+$'], function(message){
+    new Command([/^!shh+$/i], function(message){
         stopSound(message.author.voiceChannel);
     }),
 
-    new Command(['^!juicy$'], function(message){
+    new Command([/^!juicy$/i], function(message){
         playSound(message, soundDir+'juicy.m4a');
     }),
 
-    new Command(['^!age+$'], function(message){
+    new Command([/^!age+$/i], function(message){
         playSound(message, soundDir+'agee.m4a');
     }),
 
-    new Command(['^!neverlucky$','^!nl$'], function(message){
+    new Command([/^!neverlucky$/i,/^!nl$/i], function(message){
         playSound(message, soundDir+'neverlucky.m4a');
     }),
 
-    new Command(['^!kappa$'], function(message){
+    new Command([/^!kappa$/i], function(message){
         bot.sendFile(message.channel, "img/kappaFace.png");
     }),
 
-    new Command(['^!fortune$'], function(message){
+    new Command([/^!fortune$/i], function(message){
         var text = cookie.fortunes[Math.floor(Math.random()*cookie.fortunes.length)];
         sendMessage(text, message.channel);
     }),
 
-    new Command(['^!((8)|(eight))ball$', '^bot.*lazzer.*\\?$'], function(message){
+    new Command([/^!((8)|(eight))ball$/i, /^bot.*lazzer.*\\?$/i], function(message){
 
         var aborts = [
             "or",
@@ -191,7 +191,7 @@ var commands = [
         sendMessage(text, message.channel);
     }),
 
-    new Command(['^!rng\\s*\\d+\\s*(-|(to))\\s*\\d+$'], function(message){
+    new Command([/^!rng\\s*\\d+\\s*(-|(to))\\s*\\d+$/i], function(message){
         var fixed = message.content.replace(/ /g, '');
         fixed = fixed.replace('to', '-');
         fixed = fixed.substring(4);
@@ -207,7 +207,7 @@ var commands = [
         sendMessage(text, message.channel);
     }),
 
-    new Command(['^!help$'], function(message){
+    new Command([/^!help$/i], function(message){
         var text = 
         "Help:\n" + 
         "\t- !agee: Brings bot lazzer into your channel for a cheerful \"agee\"\n" + 
@@ -223,11 +223,11 @@ var commands = [
         sendMessage(text, message.author);
     }),
 
-    new Command(['((hi)|(hello)).*bot.*lazzer'], function(message){
+    new Command([/((hi)|(hello)).*bot.*lazzer/i], function(message){
         sendMessage("Hello "+message.author.username+"!", message.channel);
     }),
 
-    new Command(['agee+'], function(message){
+    new Command([/agee+/i], function(message){
         sendMessage("ageee", message.channel);
     })
 
