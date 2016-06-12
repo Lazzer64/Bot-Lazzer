@@ -139,7 +139,7 @@ var commands = [
 // Messages matching multiple regular expressions will execute only the command found earliest in the array
 
 
-    new Command([/^!play \\S*$/i], function(message){
+    new Command([/^!play \S*$/i], function(message){
         playYoutube(message);
     }),
 
@@ -168,7 +168,7 @@ var commands = [
         sendMessage(text, message.channel);
     }),
 
-    new Command([/^!((8)|(eight))ball$/i, /^bot.*lazzer.*\\?$/i], function(message){
+    new Command([/^!((8)|(eight))ball$/i, /^bot.*lazzer.*\?$/i], function(message){
 
         var aborts = [
             "or",
@@ -191,7 +191,7 @@ var commands = [
         sendMessage(text, message.channel);
     }),
 
-    new Command([/^!rng\\s*\\d+\\s*(-|(to))\\s*\\d+$/i], function(message){
+    new Command([/^!rng\s*\d+\s*(-|(to))\s*\d+$/i], function(message){
         var fixed = message.content.replace(/ /g, '');
         fixed = fixed.replace('to', '-');
         fixed = fixed.substring(4);
