@@ -170,18 +170,10 @@ var commands = [
 
     new Command([/^!((8)|(eight))ball$/i, /^bot.*lazzer.*\?$/i], function(message){
 
-        var aborts = [
-            "or",
-            "who",
-            "where",
-            "when",
-            "why",
-            "how",
-            "what",
-        ]
+        var aborts = [ 'or', 'who', 'where', 'when', 'why', 'how', 'what' ]
 
         for (var x in aborts) {
-            if(message.content.match(new RegExp(aborts[x]))){
+            if(message.content.match(new RegExp('\s'+aborts[x])+'\s')){
                 sendMessage("I can only answer yes or no questions", message.channel);
                 return;
             }
@@ -223,7 +215,7 @@ var commands = [
         sendMessage(text, message.author);
     }),
 
-    new Command([/((hi)|(hello)).*bot.*lazzer/i], function(message){
+    new Command([/^((hi)|(hello))\s+.*bot.*lazzer/i], function(message){
         sendMessage("Hello "+message.author.username+"!", message.channel);
     }),
 
