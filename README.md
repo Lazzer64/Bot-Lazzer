@@ -17,3 +17,11 @@
 * Build the docker image `docker build -t botlazzer .`
 * Run Bot-Lazzer with docker `docker run -it botlazzer`
 * Add Bot-Lazzer to your channel using the link provided in the shell 
+
+##Custom Voice Commands
+* Place the sound you wish to add into `resources/sounds`
+* Place your new command into `custom.json`, the key being the command to enter and the value being the sound file.
+```javascript
+"neverlucky": "neverlucky.m4a",
+"mynewcommand": "theSoundFile.mp3"
+ ```
