@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "main": "botlazzer.js",
   "dependencies": {
-    "discord.js": "7.0.1",
+    "discord.js": "8.1.0",
     "directory-modules": "^0.0.1"
   },
   "devDependencies": {},
