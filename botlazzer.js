@@ -37,8 +37,14 @@ bot.on('message', function(message) {
 });
 
 function canExectue(user, cmd) {
+    if(timedOut(user)) return false;
     if(!hasPermission(user,cmd)) return false;
     return true;
+}
+
+var timeout = [];
+function timedOut(user) {
+    return timeout.indexOf(user.id) != -1;
 }
 
 function hasPermission(user, cmd) {
