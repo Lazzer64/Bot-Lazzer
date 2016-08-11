@@ -27,7 +27,7 @@ bot.on('message', function(message) {
 
     messageInfo = (message.author.username+"("+message.author.id+"): \""+message.content+"\"");
 
-    if(canExectue(message.author, cmd)){
+    if(canExectue(message.author, message.server, cmd)){
         cmd.action(bot, message);
         console.log(messageInfo);
     }
@@ -36,9 +36,9 @@ bot.on('message', function(message) {
     } 
 });
 
-function canExectue(user, cmd) {
+function canExectue(user, server, cmd) {
     if(timedOut(user)) return false;
-    if(!hasPermission(user,cmd)) return false;
+    if(!hasPermission(user,server,cmd)) return false;
     return true;
 }
 
@@ -47,8 +47,16 @@ function timedOut(user) {
     return timeout.indexOf(user.id) != -1;
 }
 
-function hasPermission(user, cmd) {
-    return true;
+function hasPermission(user, server, cmd) {
+    if(cmd.permission === undefined) return true;
+
+    roles = server.rolesOfUser(user);
+    for (var i in roles) {
+        if(cmd.permission.indexOf(roles[i].name) != -1){
+            return true;
+        }
+    }
+    return false;
 }
 
 function getCommand(message) {
