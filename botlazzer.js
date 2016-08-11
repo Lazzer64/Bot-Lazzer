@@ -33,6 +33,7 @@ bot.on('message', function(message) {
     }
     else {
         console.log('[DENIED]',messageInfo);
+        bot.sendMessage(message.channel,'```You do not have permission to do that```');
     } 
 });
 
