@@ -13,7 +13,6 @@ var commands = []
 ;
 
 bot.on('ready', function() {
-
     console.log("Bot Lazzer, Bot Lazzer...");
     console.log("Use the following url to add Bot-Lazzer to your server:");
     console.log("https://discordapp.com/oauth2/authorize?client_id="+clientID+"&scope=bot&permissions="+permissions);
@@ -22,13 +21,29 @@ bot.on('ready', function() {
 });
 
 bot.on('message', function(message) {
-    if(message.author == bot.user) return;
+    if(message.author === bot.user) return;
     var cmd = getCommand(message);
-    if(cmd != undefined){
-        console.log(message.author.username + "(" + message.author.id + "): \"" + message.content + "\"");
+    if(cmd === undefined) return;
+
+    messageInfo = (message.author.username+"("+message.author.id+"): \""+message.content+"\"");
+
+    if(canExectue(message.author, cmd)){
         cmd.action(bot, message);
+        console.log(messageInfo);
     }
+    else {
+        console.log('[DENIED]',messageInfo);
+    } 
 });
+
+function canExectue(user, cmd) {
+    if(!hasPermission(user,cmd)) return false;
+    return true;
+}
+
+function hasPermission(user, cmd) {
+    return true;
+}
 
 function getCommand(message) {
     for (var cmd in commands) {
