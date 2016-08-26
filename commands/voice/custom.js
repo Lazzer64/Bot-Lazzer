@@ -11,6 +11,7 @@ for(var key in keys){
 }
 
 module.exports = {
+    key: 'custom voice',
     regexp: regx,
     action: function(bot, message) {
         // Strip the prefix character (!)

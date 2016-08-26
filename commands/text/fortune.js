@@ -2,6 +2,7 @@ var sendMessage = require('../sendmessage.js');
 var cookie = require('../../resources/fortunecookie.js');
 
 module.exports = {
+    key: 'fortune',
     regexp: [/^!fortune$/i],
     action: function(bot, message) {
         var text = cookie.fortunes[Math.floor(Math.random()*cookie.fortunes.length)];

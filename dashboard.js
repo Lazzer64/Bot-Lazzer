@@ -17,12 +17,11 @@ function getSubdirs(dir) {
     return dirs;
 }
 
-function getCommands(dir) {
+function getCommands(dirs) {
     commands = [];
     for (var i in dirs) {
-        var cmds = fs.readdirSync(dirs[i]);
-        cmds = cmds.map(function(x){return dirs[i]+'/'+x});
-        commands = commands.concat(cmds)
+        cmds = dm.get_modules_sync(__dirname+'/'+dirs[i])
+        commands = commands.concat(cmds);
     }
     return commands;
 }
@@ -31,7 +30,7 @@ function initSettings() {
     commands = getCommands(getSubdirs('commands'));
     var settings = {};
     for (var i in commands) {
-        settings[commands[i]] = {active: true};
+        settings[commands[i].key] = {active: true};
     }
     return settings;
 }

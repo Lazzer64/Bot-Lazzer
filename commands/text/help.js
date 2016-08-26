@@ -12,6 +12,7 @@ function customCommandsText(commands) {
 }
 
 module.exports = {
+    key: 'help',
     regexp: [/^!help$/i],
     action: function(bot, message) {
         var text =

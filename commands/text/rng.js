@@ -1,6 +1,7 @@
 var sendMessage = require('../sendmessage.js');
 
 module.exports = {
+    key: 'rng',
     regexp: [/^!rng\s*\d+\s*(-|(to))\s*\d+$/i],
     action: function(bot, message) {
         var fixed = message.content.replace(/ /g, '');

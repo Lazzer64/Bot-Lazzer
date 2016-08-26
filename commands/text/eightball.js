@@ -2,6 +2,7 @@ var sendMessage = require('../sendmessage.js');
 var eightball = require('../../resources/eightball.js');
 
 module.exports = {
+    key: 'eightball',
     regexp: [/^!((8)|(eight))ball$/i, /^bot.*lazzer.*\?$/i],
     action: function(bot, message) {
 
