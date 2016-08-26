@@ -40,6 +40,7 @@ function canExecute(command) {
         return settings[command.key].active;
     } catch (e) {
         console.log("Missing settings.json");
+        return true;
     }
 }
 
