@@ -14,7 +14,6 @@ var commands = []
 ;
 
 bot.on('ready', function() {
-
     console.log("Bot Lazzer, Bot Lazzer...");
     console.log("Use the following url to add Bot-Lazzer to your server:");
     console.log("https://discordapp.com/oauth2/authorize?client_id="+clientID+"&scope=bot&permissions="+permissions);
@@ -23,25 +22,51 @@ bot.on('ready', function() {
 });
 
 bot.on('message', function(message) {
-    if(message.author == bot.user) return;
+    if(message.author === bot.user) return;
     var cmd = getCommand(message);
-    if(cmd != undefined){
-        if(canExecute(cmd)){
-            console.log(message.author.username + "(" + message.author.id + "): \"" + message.content + "\"");
-            cmd.action(bot, message);
-        }
+    if(cmd === undefined) return;
+
+    messageInfo = (message.author.username+"("+message.author.id+"): \""+message.content+"\"");
+
+    if(canExecute(message.author, message.server, cmd)){
+        cmd.action(bot, message);
+        console.log(messageInfo);
     }
+    else {
+        console.log('[DENIED]',messageInfo);
+        // bot.sendMessage(message.channel,'```You do not have permission to do that```');
+    } 
 });
 
-function canExecute(command) {
+function canExecute(user, server, cmd) {
+    if(timedOut(user)) return false;
     try {
         var data = fs.readFileSync('settings.json','utf8');
-        var settings = JSON.parse(data)
-        return settings[command.key].active;
+        var settings = JSON.parse(data);
+        if(!hasPermission(settings,user,server,cmd)) return false;
+        return settings[cmd.key].active;
     } catch (e) {
-        console.log("Missing settings.json");
+        console.log(e);
         return true;
     }
+}
+
+var timeout = [];
+function timedOut(user) {
+    return timeout.indexOf(user.id) != -1;
+}
+
+function hasPermission(settings, user, server, cmd) {
+    var permission = settings[cmd.key].permission;
+    if (permission === undefined) return true;
+
+    roles = server.rolesOfUser(user);
+    for (var i in roles) {
+        if(permission.indexOf(roles[i].name) != -1){
+            return true;
+        }
+    }
+    return false;
 }
 
 function getCommand(message) {
