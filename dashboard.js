@@ -67,6 +67,7 @@ function printSettings(settings) {
 }
 
 function toggleCommand(settings){
+    clearScreen()
     printSettings(settings);
     rl.question('Toggle which command? (x to return) ',function(select) {
         if (select === 'x') {
@@ -84,6 +85,7 @@ function toggleCommand(settings){
 }
 
 function editPermissions(settings){
+    clearScreen()
     printSettings(settings);
     rl.question('Set permissions of which command? (x to return) ',function(select) {
         if (select === 'x') {
@@ -106,15 +108,19 @@ function editPermissions(settings){
     });
 }
 
+function clearScreen() {
+    process.stdout.write('\u001B[2J\u001B[0;0f');
+}
+
 function write(settings) {
     fs.writeFileSync('settings.json',JSON.stringify(settings))
 }
 
 function menu(settings) {
+    clearScreen()
     console.log('toggle');
     console.log('permission');
     rl.question('Open what? (x to quit) ',function(select) {
-        console.log(select);
         switch (select) {
             case 'toggle':
                 toggleCommand(settings);
