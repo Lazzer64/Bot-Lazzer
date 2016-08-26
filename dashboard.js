@@ -26,24 +26,30 @@ function getCommands(dirs) {
     return commands;
 }
 
-function initSettings() {
-    commands = getCommands(getSubdirs('commands'));
-    var settings = {};
+function initSettings(commands, oldSettings) {
+    settings = {};
     for (var i in commands) {
-        settings[commands[i].key] = {active: true};
+        var key = commands[i].key;
+        if (oldSettings[key] != undefined){
+            settings[key] = oldSettings[key];
+        } else {
+            settings[key] = {active: true};
+        }
     }
     return settings;
 }
 
-function getSettings() {
+function getSettings(commands) {
     var file = 'settings.json';
     try {
         var data = fs.readFileSync(file,'utf8');
+        var settings = JSON.parse(data);
+        settings = initSettings(commands,settings);
         console.log('Loading "settings.json"');
-        return JSON.parse(data);
+        return settings;
     } catch (e) {
         console.log('No settings file found creating "settings.json"');
-        return initSettings();
+        return initSettings(commands,{});
     }
 }
 
@@ -76,5 +82,6 @@ function close(settings) {
     fs.writeFileSync('settings.json',JSON.stringify(settings))
 }
 
-settings = getSettings();
+commands = getCommands(getSubdirs('commands'));
+settings = getSettings(commands);
 toggle(settings);
