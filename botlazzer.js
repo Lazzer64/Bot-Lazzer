@@ -59,6 +59,7 @@ function timedOut(user) {
 function hasPermission(settings, user, server, cmd) {
     var permission = settings[cmd.key].permission;
     if (permission === undefined) return true;
+    if (permission.length === 0) return true;
 
     roles = server.rolesOfUser(user);
     for (var i in roles) {

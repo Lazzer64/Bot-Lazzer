@@ -8,6 +8,7 @@ var rl = readline.createInterface({
 
 const RED   = '\033[01;31m';
 const GREEN = '\033[01;32m';
+const BLUE  = '\033[01;34m';
 const RESET = '\033[00m';
 
 function getSubdirs(dir) {
@@ -33,7 +34,10 @@ function initSettings(commands, oldSettings) {
         if (oldSettings[key] != undefined){
             settings[key] = oldSettings[key];
         } else {
-            settings[key] = {active: true};
+            settings[key] = {
+                active: true,
+                permission: []
+            };
         }
     }
     return settings;
@@ -55,33 +59,78 @@ function getSettings(commands) {
 
 function printSettings(settings) {
     for (var i in settings) {
+        var setting = settings[i];
         var color = RED;
-        if (settings[i].active) color = GREEN;
-        console.log(i,color+settings[i].active,RESET);
+        if (setting.active) color = GREEN;
+        console.log(i,color+setting.active,BLUE,setting.permission,RESET);
     }
 }
 
-function toggle(settings){
+function toggleCommand(settings){
     printSettings(settings);
-    rl.question('Toggle which command? (x to quit) ',function(select) {
+    rl.question('Toggle which command? (x to return) ',function(select) {
         if (select === 'x') {
-            rl.close();
-            close(settings);
+            menu(settings);
             return;
         }
         if (settings[select] != undefined){
             settings[select].active = !settings[select].active;
+            write(settings);
         } else {
             console.log(RED+"Invalid selection."+RESET);
         }
-        toggle(settings);
+        toggleCommand(settings);
     });
 }
 
-function close(settings) {
+function editPermissions(settings){
+    printSettings(settings);
+    rl.question('Set permissions of which command? (x to return) ',function(select) {
+        if (select === 'x') {
+            menu(settings);
+            return;
+        }
+        if (settings[select] != undefined){
+            settings[select].permission;
+            rl.question('Permissions: ',function(input) {
+                permissions = input.split(' ');
+                if (permissions[0] === '') permissions = [];
+                settings[select].permission = permissions;
+                write(settings);
+                editPermissions(settings);
+            });
+        } else {
+            console.log(RED+"Invalid selection."+RESET);
+            editPermissions(settings);
+        }
+    });
+}
+
+function write(settings) {
     fs.writeFileSync('settings.json',JSON.stringify(settings))
+}
+
+function menu(settings) {
+    console.log('toggle');
+    console.log('permission');
+    rl.question('Open what? (x to quit) ',function(select) {
+        console.log(select);
+        switch (select) {
+            case 'toggle':
+                toggleCommand(settings);
+                break;
+            case 'permission':
+                editPermissions(settings);
+                break;
+            case 'x':
+                rl.close();
+                return;
+            default:
+                menu(settings);
+        }
+    });
 }
 
 commands = getCommands(getSubdirs('commands'));
 settings = getSettings(commands);
-toggle(settings);
+menu(settings);
