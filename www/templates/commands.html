@@ -1,0 +1,22 @@
+<div class='page-header'>
+    <h1 class='text-center'>Custom Commands</h1>
+
+    {% for command in commands %}
+    <form method='post'>
+        <input type='text' value={{command}} name='name'/>
+        <input type='text' value={{commands[command]}} name='file'/>
+        <button formaction='/update' type='submit'>change</button>
+        <button formaction='/delete' type='submit'>delete</button>
+    </form>
+    {% endfor %}
+
+    <form action='/update' method='post'>
+        <input type='text' name='name'/>
+        <input type='text' name='file'/>
+        <button type='submit'>add</button>
+    </form>
+
+    <form action='/save' method='post'>
+        <button type="submit">Save</button>
+    </form>
+</div>
