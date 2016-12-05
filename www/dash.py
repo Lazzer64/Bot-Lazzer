@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect
+from werkzeug.utils import secure_filename
 import json
 import os
 
@@ -38,7 +39,8 @@ def delCommand():
 @app.route('/upload', methods=['POST'])
 def uploadFile():
     file = request.files['file']
-    file.save(os.path.join(SOUND_DIR, file.filename))
+    fname = secure_filename(file.filename)
+    file.save(os.path.join(SOUND_DIR, fname))
     return redirect('/commands')
 
 @app.route('/save', methods=['POST'])
