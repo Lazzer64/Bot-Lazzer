@@ -1,7 +1,15 @@
 from flask import Flask, render_template, request, redirect
 import json
+import os
+
+SOUND_DIR = 'resources/sounds/'
 
 app = Flask(__name__)
+
+def saveJSON():
+    with open('custom.json','wb') as f:
+        json.dump(customs,f)
+    return redirect('/commands')
 
 with open('custom.json') as raw:
     customs = json.load(raw)
@@ -12,7 +20,8 @@ def index():
 
 @app.route('/commands')
 def commands():
-    return render_template('commands.html', commands=customs)
+    sound_files = os.listdir(SOUND_DIR)
+    return render_template('commands.html', commands=customs, sounds=sound_files)
 
 @app.route('/update', methods=['POST'])
 def updateCommand():
@@ -24,6 +33,12 @@ def updateCommand():
 def delCommand():
     if request.form['name']:
         customs.pop(request.form['name'])
+    return redirect('/commands')
+
+@app.route('/upload', methods=['POST'])
+def uploadFile():
+    file = request.files['file']
+    file.save(os.path.join(SOUND_DIR, file.filename))
     return redirect('/commands')
 
 @app.route('/save', methods=['POST'])

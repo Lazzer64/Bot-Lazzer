@@ -4,7 +4,17 @@
     {% for command in commands %}
     <form method='post'>
         <input type='text' value={{command}} name='name'/>
-        <input type='text' value={{commands[command]}} name='file'/>
+        <!-- <input type='text' value={{commands[command]}} name='file'/> -->
+        <select name='file'>
+            {% for sound in sounds %}
+            <option
+                {% if sound == commands[command] %}
+                selected
+                {% endif %}
+            >
+            {{sound}}</option>
+            {% endfor %}
+        </select>
         <button formaction='/update' type='submit'>change</button>
         <button formaction='/delete' type='submit'>delete</button>
     </form>
@@ -12,11 +22,21 @@
 
     <form action='/update' method='post'>
         <input type='text' name='name'/>
-        <input type='text' name='file'/>
+        <select name='file'>
+            {% for sound in sounds %}
+            <option>{{sound}}</option>
+            {% endfor %}
+        </select>
         <button type='submit'>add</button>
+    </form>
+
+    <form method='post' enctype='multipart/form-data'>
+        <input type='file' name='file'>
+        <input formaction='/upload' type='submit' value='Upload'>
     </form>
 
     <form action='/save' method='post'>
         <button type="submit">Save</button>
     </form>
+
 </div>
