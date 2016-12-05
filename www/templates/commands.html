@@ -1,33 +1,41 @@
+{% extends "base.html" %}
+
+{% block body %}
 <div class='page-header'>
     <h1 class='text-center'>Custom Commands</h1>
-
+</div>
+<h3>Command <span style='margin-left:90px;'>Sound File</span></h3>
+<div>
     {% for command in commands %}
-    <form method='post'>
-        <input type='text' value={{command}} name='name'/>
-        <!-- <input type='text' value={{commands[command]}} name='file'/> -->
-        <select name='file'>
-            {% for sound in sounds %}
-            <option
+    <form method='post' class='form-inline'>
+        <div class='form-group'>
+            <input class='form-control' type='text' value={{command}} name='name'/>
+            <select class='form-control' name='file'>
+                {% for sound in sounds %}
+                <option
                 {% if sound == commands[command] %}
                 selected
                 {% endif %}
-            >
-            {{sound}}</option>
-            {% endfor %}
-        </select>
-        <button formaction='/update' type='submit'>change</button>
-        <button formaction='/delete' type='submit'>delete</button>
+                >
+                {{sound}}</option>
+                {% endfor %}
+            </select>
+            <button formaction='/update' class='btn btn-warning' type='submit' style='width:74px;'>update</button>
+            <button formaction='/delete' class='btn btn-danger' type='submit' style='width:74px;'>delete</button>
+        </div>
     </form>
     {% endfor %}
 
-    <form action='/update' method='post'>
-        <input type='text' name='name'/>
-        <select name='file'>
-            {% for sound in sounds %}
-            <option>{{sound}}</option>
-            {% endfor %}
-        </select>
-        <button type='submit'>add</button>
+    <form action='/update' class='form-inline' method='post'>
+        <div class='form-group'>
+            <input class='form-control' type='text' name='name'/>
+            <select class='form-control' name='file'>
+                {% for sound in sounds %}
+                <option>{{sound}}</option>
+                {% endfor %}
+            </select>
+            <button class='btn btn-success' type='submit' style='width:150px;'>add</button>
+        </div>
     </form>
 
     <form method='post' enctype='multipart/form-data'>
@@ -36,7 +44,8 @@
     </form>
 
     <form action='/save' method='post'>
-        <button type="submit">Save</button>
+        <button class='btn btn-lg btn-success' style='width:100%;' type='submit'>Save</button>
     </form>
 
 </div>
+{% endblock %}
