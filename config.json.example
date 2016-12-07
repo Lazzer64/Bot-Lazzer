@@ -1,0 +1,13 @@
+{
+    "clientID": "Client/Application ID found under App Details",
+    "token": "Token found under App Bot User",
+    "prefix": "!",
+    "commands": {
+        "text": {
+            "commands": {
+                "echo": "enabled",
+                "ping": "disabled"
+            }
+        }
+    }
+}

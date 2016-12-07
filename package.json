@@ -1,0 +1,20 @@
+{
+    "name": "botlazzer",
+    "version": "2.0.0",
+    "description": "My Bot for Discord",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/lazzer64/bot-lazzer"
+    },
+    "main": "./src/index.js",
+    "scripts": {
+        "start": "node index.js"
+    },
+    "dependencies": {
+        "discord.js": "10.0.1",
+        "node-opus": "^0.2.1"
+    },
+    "engines": {
+        "node": ">=6.0.0"
+    }
+}
