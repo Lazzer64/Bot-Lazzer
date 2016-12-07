@@ -4,10 +4,8 @@
     "prefix": "!",
     "commands": {
         "text": {
-            "commands": {
-                "echo": "enabled",
-                "ping": "disabled"
-            }
+            "echo": "enabled",
+            "ping": "disabled"
         }
     }
 }

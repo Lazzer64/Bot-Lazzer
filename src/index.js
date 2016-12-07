@@ -5,10 +5,11 @@ const permissions = '3148800';
 var COMMANDS = {};
 function requireCommands(commands, path) {
     for (var i in commands) {
-        if(commands[i].commands) {
-            requireCommands(commands[i].commands, `${path}/${i}`)
-        } else if(commands[i] === 'enabled'){
+        if(commands[i] === 'enabled'){
             COMMANDS[path] = require(`${path}/${i}.js`);
+        }
+        else if(commands[i] != 'disabled') {
+            requireCommands(commands[i], `${path}/${i}`)
         }
     }
 }
