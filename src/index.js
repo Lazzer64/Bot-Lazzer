@@ -1,28 +1,18 @@
 const Discord = require('discord.js');
-const fs      = require('fs');
 const config  = require('../config.json');
 const permissions = '3148800';
 
 var COMMANDS = {};
-function requireCommands(commands, path) {
-    for (var i in commands) {
-        if(commands[i] === 'enabled'){
-            var cmd = `${path}/${i}.js`;
-            COMMANDS[cmd] = require(cmd);
-        }
-        else if(commands[i] === '*') {
-            var files = fs.readdirSync(`${path}/${i}`);
-            for (var j in files) {
-                var cmd = `${path}/${i}/${files[j]}`;
-                COMMANDS[cmd] = require(cmd);
-            }
-        }
-        else if(commands[i] != 'disabled') {
-            requireCommands(commands[i], `${path}/${i}`)
+function requireCommands() {
+    for (var i in config.plugins) {
+        var plugin = require(`${__dirname}/plugins/${config.plugins[i]}/plugin.js`);
+        console.log(`Loading ${config.plugins[i]}...`);
+        for (var j in plugin.commands) {
+            COMMANDS[`${config.plugins[i]}.${plugin.commands[j].name}`] = plugin.commands[j];
         }
     }
 }
-requireCommands(config.plugins, `${__dirname}/plugins`);
+requireCommands();
 global.config = config;
 global.commands = COMMANDS;
 
