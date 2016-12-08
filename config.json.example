@@ -3,6 +3,10 @@
     "token": "Token found under App Bot User",
     "prefix": "!",
     "commands": {
+        "util": {
+            "help": "enabled",
+            "list": "enabled"
+        },
         "text": {
             "echo": "enabled",
             "ping": "disabled"

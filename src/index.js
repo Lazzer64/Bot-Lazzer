@@ -15,6 +15,7 @@ function requireCommands(commands, path) {
     }
 }
 requireCommands(config.commands, './commands');
+global.config = config;
 global.commands = COMMANDS;
 
 const bot = new Discord.Client();

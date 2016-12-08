@@ -1,7 +1,7 @@
 module.exports = {
-    name: 'Ping',
+    name: 'ping',
     description: 'Replies Pong',
-    usage: '',
+    usage: 'ping',
     regexp: 'ping',
     action: function(message) {
         message.channel.sendMessage('Pong');
