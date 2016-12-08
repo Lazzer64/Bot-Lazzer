@@ -6,7 +6,8 @@ var COMMANDS = {};
 function requireCommands(commands, path) {
     for (var i in commands) {
         if(commands[i] === 'enabled'){
-            COMMANDS[path] = require(`${path}/${i}.js`);
+            var cmd = `${path}/${i}.js`;
+            COMMANDS[cmd] = require(cmd);
         }
         else if(commands[i] != 'disabled') {
             requireCommands(commands[i], `${path}/${i}`)
@@ -14,6 +15,7 @@ function requireCommands(commands, path) {
     }
 }
 requireCommands(config.commands, './commands');
+global.commands = COMMANDS;
 
 const bot = new Discord.Client();
 bot.on('ready', () => {
