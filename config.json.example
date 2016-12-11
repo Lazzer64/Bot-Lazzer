@@ -2,5 +2,5 @@
     "clientID": "Client/Application ID found under App Details",
     "token": "Token found under App Bot User",
     "prefix": "!",
-    "plugins": [ "util", "text" ]
+    "plugins": [ "util", "text", "emoji" ]
 }
