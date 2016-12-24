@@ -33,20 +33,27 @@ module.exports = {
         if(message.channel.type === 'dm') return;
         var voiceChannel = message.member.voiceChannel;
         var sound = sounds[message.content];
+        var channel_string = `${voiceChannel.guild} ${voiceChannel.name}${voiceChannel}`;
 
         if(voiceChannel) {
+
+            if(voiceChannel.connection != undefined) {
+                console.log(`A sound is already playing in ${channel_string}`);
+                return;
+            }
+
             voiceChannel.join().then( connection => {
-                var sound_file = `${sound_dir}/${sound}`
+                var sound_file = `${sound_dir}/${sound}`;
                 var dispatcher = connection.playFile(sound_file);
 
-            console.log(`Connected to voice channel: ${voiceChannel.guild} ${voiceChannel.name}${voiceChannel}`);
-            console.log(`Playing ${sound_file}`);
+                console.log(`Connected to voice channel: ${channel_string}`);
+                console.log(`Playing ${sound_file}`);
 
-            dispatcher.on('end', () => {
-                console.log('Done playing');
-                connection.disconnect();
-                voiceChannel.leave();
-            });
+                dispatcher.on('end', () => {
+                    console.log('Done playing');
+                    connection.disconnect();
+                    voiceChannel.leave();
+                });
 
             }).catch(console.error);
         }
