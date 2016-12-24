@@ -5,8 +5,8 @@ const permissions = '3148800';
 var COMMANDS = {};
 function requireCommands() {
     for (var i in config.plugins) {
-        var plugin = require(`${__dirname}/plugins/${config.plugins[i]}/plugin.js`);
         console.log(`Loading ${config.plugins[i]}...`);
+        var plugin = require(`${__dirname}/plugins/${config.plugins[i]}/plugin.js`);
         for (var j in plugin.commands) {
             COMMANDS[`${config.plugins[i]}.${plugin.commands[j].name}`] = plugin.commands[j];
         }
@@ -32,7 +32,11 @@ bot.on('message', (message) => {
         message.content = content;
         console.log(`${author.username}#${author.discriminator}: ${content}`);
 
-        getCommand(content).action(message);
+        try {
+            getCommand(content).action(message);
+        } catch (err) {
+            console.error(err);
+        }
     }
 });
 
