@@ -2,7 +2,7 @@ module.exports.bigger = bigger = {
     name: 'bigger emojis',
     description: 'Sends an enlarged version of a guild emoji',
     usage: '[emoji]',
-    regexp: /^( )?:.+:/,
+    regexp: /^\s?<:\w+:\d+>$/,
     action: function(message) {
         var emojiID = message.content.replace(/\D/g, '');
         if(emojiID) {

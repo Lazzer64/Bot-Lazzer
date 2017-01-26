@@ -2,7 +2,7 @@ module.exports.help = help = {
     name: 'help',
     description: 'Displays this help message',
     usage: 'help [command]',
-    regexp: /^help/,
+    regexp: /^help(\s\S*)?$/,
     action: function(message) {
         var commands = global.commands;
         var option = message.content.substring('help '.length);
@@ -36,10 +36,10 @@ function getHelp(command) {
 
 
 module.exports.list = list = {
-    name: /^list$/,
+    name: 'list',
     description: 'Lists currently enabled commands',
     usage: 'list',
-    regexp: '(list|commands)',
+    regexp: /^((list)|(commands))$/,
     action: function(message) {
         var commands = global.commands;
         var response = 'Available commands:\n```';

@@ -8,12 +8,17 @@
   },
   "main": "./src/index.js",
   "scripts": {
-    "start": "node src/index.js"
+    "start": "node src/index.js",
+    "test": "mocha"
   },
   "dependencies": {
     "discord.js": "10.0.1",
     "node-opus": "^0.2.1",
     "opusscript": "^0.0.1"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0"
   },
   "engines": {
     "node": ">=6.0.0"
