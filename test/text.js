@@ -39,4 +39,21 @@ describe('Text', () => {
             done()
         })
     })
+
+    describe('#roll', () => {
+        var regexp = text.roll.regexp
+        it('should match expressions', (done) => {
+            expect('roll 1d6'.match(regexp)).to.be.ok
+            expect('roll 2d10'.match(regexp)).to.be.ok
+            done()
+        })
+        it('should not match expressions', (done) => {
+            expect('hello world'.match(regexp)).to.not.be.ok
+            expect('roll 1d'.match(regexp)).to.not.be.ok
+            expect('roll d6'.match(regexp)).to.not.be.ok
+            expect('1d6'.match(regexp)).to.not.be.ok
+            expect('roll 1d6 1d2'.match(regexp)).to.not.be.ok
+            done()
+        })
+    })
 })
