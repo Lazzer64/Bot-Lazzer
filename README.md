@@ -19,6 +19,7 @@ Bot information found at: https://discordapp.com/developers/applications/me
   "clientID": "11223355555" // Client/Application ID found under App Details,
   "token": "12Ab3C39dj18dh8" // Token found under App Bot User,
   "prefix": "!", // Symbol for commands to be prefixed by e.g. !help or /help
+  "playing": "Lazzer Simulator 2017", // Game to display bot as playing (can be omitted)
   "plugins": [ "util", "text", "emoji" ] // List of enabled plugins found in src/plugins
 }
 ```

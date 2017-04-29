@@ -2,5 +2,6 @@
     "clientID": "Client/Application ID found under App Details",
     "token": "Token found under App Bot User",
     "prefix": "!",
+    "playing": "Lazzer Simulator 2017",
     "plugins": [ "util", "text", "emoji" ]
 }

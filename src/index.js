@@ -20,7 +20,7 @@ const bot = new Discord.Client();
 bot.on('ready', () => {
     console.log('Use the following url to add the bot to your server:');
     console.log(`https://discordapp.com/oauth2/authorize?client_id=${config.clientID}&scope=bot&permissions=${permissions}`);
-    bot.user.setGame('Lazzer Simulator 2016');
+    bot.user.setGame(config.playing);
 });
 
 bot.on('message', (message) => {
