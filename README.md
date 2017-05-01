@@ -5,7 +5,7 @@ A Discord bot written in Node.js using [discord.js](https://github.com/hydrabolt
 * Clone the git repository `git clone https://github.com/Lazzer64/bot-lazzer.git && cd bot-lazzer`
 * Install packages `npm install`
 * Fill out config.json.example with the bot token and clientID
-* Rename config.json.examlpe to config.json
+* Rename config.json.example to config.json
 * Run Bot-Lazzer with `npm start`
 * Add Bot-Lazzer to your channel using the link provided in the shell 
 
